@@ -201,3 +201,196 @@ fun take_impl (xs, i) =
         then [hd xs]
         else hd xs :: take_impl(tl xs, i - 1)
     end;
+
+fun drop (xs, i) =
+    let
+        val length = length_impl xs
+    in
+        if i < 0 orelse i >= length
+        then raise Subscript
+        else if i = 0
+        then xs
+        else drop(tl xs, i - 1)
+    end
+
+fun rev xs =
+    case xs of
+        [] => []
+        | x::xs' => rev(xs') @ [x]
+
+fun concat xs =
+    case xs of
+        [] => []
+        | x::xs' => x @ concat xs'
+
+fun revAppend(l1, l2) =
+    (rev l1) @ l2
+
+fun map (f, xs) =
+    case xs of
+        [] => []
+        | x::xs' => (f x) :: map (f, xs')
+
+fun mapPartial (f, xs) =
+    case xs of
+        [] => []
+        | x::xs' => if isSome (f x) then (valOf (f x))::mapPartial(f,xs') else mapPartial(f,xs')
+
+fun find (f, xs) =
+    case xs of
+        [] => NONE
+        | x::xs' => if (f x) then SOME (x) else find (f, xs')
+
+fun filter (f, xs) =
+    case xs of
+        [] => []
+        | x::xs' => if (f x) then x::filter(f, xs') else filter(f,xs')
+
+fun partition (f, xs) =
+    let
+        fun aux (xs, pos, neg) =
+            case xs of
+                [] => (pos, neg)
+                | x::xs' => if (f x) then aux (xs', pos @ [x], neg) else aux (xs', pos, neg @ [x])
+    in
+        aux(xs,[],[])
+    end
+
+fun foldl (f, acc, xs) =
+    case xs of
+        [] => acc
+        | x::xs' => foldl (f, (f (x, acc)), xs')
+
+fun foldr (f, acc, xs) =
+    foldl (f, acc, rev xs)
+
+fun exists (f, xs) =
+    case xs of
+        [] => false
+        | x::xs' => if (f x) then true else exists (f, xs')
+
+fun all (f, xs) =
+    case xs of
+        [] => true
+        | x::xs' => if (f x) then all (f, xs') else false
+
+fun tabulate (n, f) =
+    if n < 0 then raise Size
+    else if n = 0 then []
+    else (f (n - 1))::tabulate(n-1, f)
+
+fun getOpt (opt, a) =
+    case opt of
+        NONE => a
+        | SOME x => x
+
+fun isSome opt =
+    case opt of
+        NONE => false
+        | _ => true
+
+fun valOf opt =
+    case opt of
+        NONE => raise Option
+        | SOME x => x
+
+fun filter (f, a) =
+    if (f a) then (SOME a) else NONE
+
+fun join a =
+    case a of
+        NONE => NONE
+        | SOME v => v
+
+fun app (f, opt) =
+    case opt of
+        NONE => NONE
+        | SOME v => f v
+
+fun map (f, opt) =
+    case opt of
+        NONE => NONE
+        | SOME v => SOME (f v)
+
+fun mapPartial (f, opt) =
+    case opt of
+        NONE => NONE
+        | SOME v => f v
+
+fun compose (f, g, a) =
+    case (g a) of
+        NONE => NONE
+        | SOME v => SOME (f v)
+
+fun composePartial (f,g,a) =
+    case (g a) of
+        NONE => NONE
+        | SOME v => f v
+
+datatype nat = ZERO | SUCC of nat
+
+(* 9 *)
+fun is_positive n =
+    case n of
+        ZERO => false
+        | _ => true
+
+exception NEGATIVE
+
+(* 10 *)
+fun pred n =
+    case n of
+        ZERO => raise NEGATIVE
+        | SUCC n' => n'
+
+(* 11 *)
+fun nat_to_int n =
+    case n of
+        ZERO => 0
+        | SUCC n' => 1 + nat_to_int n'
+
+(* val three = nat_to_int (SUCC (SUCC (SUCC (ZERO)))) *)
+
+(* 12 *)
+fun int_to_nat z =
+    if z < 0 then raise NEGATIVE
+    else if z = 0 then ZERO
+    else SUCC (int_to_nat (z-1))
+
+(* 13 *)
+fun add (n1, n2) =
+    case n1 of
+        ZERO => n2
+        | SUCC n1' => add (n1', SUCC n2)
+
+(* 14 *)
+fun sub (n1, n2) =
+    case n2 of
+        ZERO => n1
+        | SUCC n2' => sub(pred n1, n2')
+
+(* 15 *)
+fun mult (n1, n2) =
+    case n2 of
+        ZERO => ZERO
+        | SUCC ZERO => add(n1,n1)
+        | SUCC n2' => add(n1,mult(n1,n2'))
+
+(* 16 *)
+fun less_than ntup =
+    case ntup of
+        (ZERO, ZERO) => false
+        | (ZERO, _) => true
+        | (SUCC n1, SUCC n2) => less_than(n1, n2)
+
+
+datatype intSet = 
+  Elems of int list (*list of integers, possibly with duplicates to be ignored*)
+| Range of { from : int, to : int }  (* integers from one number to another *)
+| Union of intSet * intSet (* union of the two sets *)
+| Intersection of intSet * intSet (* intersection of the two sets *)
+
+
+(* 17 *)
+
+
