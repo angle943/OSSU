@@ -69,19 +69,19 @@
     (loop 0)))
 
 ;; 10
-(define (cached-assoc xs n)
-  (letrec ([current-pos 0]
-           [memo (make-vector n #f)]
-           [f (λ (v)
-                (let ([ans (vector-assoc v memo)])
-                  (if ans
-                      (cdr ans)
-                      (let ([new-ans (assoc v xs)])
-                        (begin
-                          (vector-set! memo current-pos new-ans)
-                          (set! current-pos (remainder (+ current-pos 1) n))
-                          new-ans)))))])
-    f))
+(define (cached-assoc lst n)
+  (let ([cache (make-vector n #f)]
+        [next-to-replace 0])
+    (λ (v)
+      (or (vector-assoc v cache)
+          (let ([ans (assoc v lst)])
+            (and ans
+                 (begin (vector-set! cache next-to-replace ans)
+                        (set! next-to-replace 
+                              (if (= (+ next-to-replace 1) n)
+                                  0
+                                  (+ next-to-replace 1)))
+                        ans)))))))
 
 ;; Challenge
 (define-syntax while-less
