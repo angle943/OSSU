@@ -9,3 +9,4 @@
 
 - Introduction to Mathematical Thinking - https://www.coursera.org/learn/mathematical-thinking
 - Calculus 1A: Differentiation - https://openlearninglibrary.mit.edu/courses/course-v1:MITx+18.01.1x+2T2019/about
+- Calculus 1B: Integration - https://openlearninglibrary.mit.edu/courses/course-v1:MITx+18.01.2x+3T2019/about
